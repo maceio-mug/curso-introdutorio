@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Conhecendo o MongoDB</title>
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section data-markdown>
+          <script type="text/template">
+            # Conhecendo o MongoDB
+            ### Banco de dados orientado a documentos
+
+            <small>Vilker e [Vinícius](https://about.me/vinipsmaker)</small>
+          </script>
+        </section>
+
+        <section data-markdown>
+          ![](img/inovacoes.png)
+        </section>
+
+        <section data-markdown>
+          ![](img/inovacoes2.png)
+        </section>
+
+        <section data-markdown>
+           ## JSON
+ 
+           ```
+           {
+               "name": "MongoDB",
+               "type": "DB",
+               "tags": ["bson", "performance", "data richness"],
+               "latest-version": {
+                   "major": 2,
+                   "minor": 4,
+                   "patch": 8
+               },
+               "schemaless": true
+           }
+           ```
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## JSON
+
+            ![](img/jsonobject.png)
+
+            ![](img/jsonarray.png)
+          </section>
+
+          <section data-markdown>
+            ## JSON
+
+            ![](img/jsonvalue.png)
+          </section>
+        </section>
+
+        <section data-markdown>
+          ## BSON
+
+          ![](img/bson.png)
+        </section>
+
+        <section data-markdown>
+          ## BSON vs JSON
+
+          * Suporta mais tipos de dados
+            * Formato de data
+            * ObjectID
+            * ...
+          * Representação mais compacta
+        </section>
+
+        <section data-markdown>
+          ## BSON vs outros
+
+          * Otimizado para parse rápido
+          * Minimiza interações com o HD
+        </section>
+
+        <section data-markdown>
+          ![](img/rdbms.png)
+        </section>
+
+        <section data-markdown>
+          ![](img/rdbms2.png)
+        </section>
+
+        <section data-markdown>
+          ![](img/rdbms3.png)
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Relacional e MongoDB
+
+            |Relacional    |MongoDB        |
+            |------------------------------|
+            |Banco de dados|Banco de dados |
+            |Tabela        |Coleção        |
+            |Linha         |Documento      |
+            |Coluna        |Campo/atributo |
+            |JOIN          |\*Não suporta  |
+            |Transação     |\*\*Não suporta|
+            |Agregação (*GROUP BY*)|Framework de agregação, map-reduce, ...|
+
+            <br />
+
+            <small>\*Documentos embutidos e referências</small> <br />
+            <small>\*\*Uso avançado</small>
+
+          </script>
+        </section>
+
+        <section data-markdown>
+          ## Teorema CAP
+
+          ![](img/cap2.png)
+        </section>
+
+        <section data-markdown>
+          ## Schemaless
+
+          Na coleção *bandas*:
+
+          ```
+          [
+              {
+                  "title": "Mozart Group",
+                  "desc": "A creative quartet group",
+                  "tags": "musica-classica"
+              },
+              {"title": "Angra"},
+              {
+                  "title": "Calcinha Preta",
+                  "desc": "Famosa banda de forró brasileira",
+                  "tags": ["forro", "brasil"]
+              }
+          ]
+          ```
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Schemaless
+
+            O MongoDB trata, geralmente, a falta de atributos e um atributo com
+            o valor <b style="color:#C00">null</b> da mesma forma.
+            Exceções (poucas):
+
+            * <span style="color:#900">$exists</span>
+            * <span style="color:#900">$type</span>
+            * ...
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Schemaless
+
+            No MongoDB, operadores de **seleção** (primeiro argumento do *find*)
+            são usados de forma similar ou idêntica entre arrays e não-arrays.
+
+            **Cuidado** com os operadores de atualização!
+          </script>
+        </section>
+
+        <section data-markdown>
+          ## Schemaless
+
+          ```
+          var mongoose = require('mongoose');
+          var Schema = mongoose.Schema;
+
+          var blogSchema = new Schema({
+            title:  String,
+            author: String,
+            body:   String,
+            comments: [{ body: String, date: Date }],
+            date: { type: Date, default: Date.now },
+            hidden: Boolean,
+            meta: {
+              votes: Number,
+              favs:  Number
+            }
+          });
+          ```
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Schemaless
+
+            Outras considerações:
+
+            * Fator de padding
+            * Índices esparsos (<span style="color:#900">hint({$natural: 1})</span>)
+            * ...
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## mongod
+
+            Inicia o processo do banco de dados, rodando na porta especificada
+            e usando a pasta <b style="color:#A00">"/path/to/db/files"</b> para salvar
+            os arquivos.
+
+            ```
+            mongod --port arg --dbpath /path/to/db/files
+            ```
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## mongo
+
+            Abre o console JavaScript do MongoDB com uma conexão a $DBADDRESS e executa
+            o script file.js.
+
+            ```
+            mongo --shell $DBADDRESS file.js
+            ```
+
+            Exemplos de endereços:
+
+            
+            * <small>foo</small>
+            * <small>192.169.0.5/foo</small>
+            * <small>192.169.0.5:9999/foo</small>
+          </script>
+        </section>
+
+        <section data-markdown>
+          ## mongoimport
+
+          ```
+          mongoimport --host myhost --db my_cms --collection docs &lt; mydocfile.json
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Comandos CRUD
+
+          ```
+          db.coll.insert(doc);
+          db.coll.insert([doc1, doc2]);
+
+          db.coll.find({idade: 15});
+          db.coll.find({"nome.primeiro": "Yotsuba"}, {idade: true, _id: false});
+
+          db.coll.find({idade: {$lt: 15}});
+          db.coll.find({idade: {$gt: 15, $lt: 40, $ne: 33}});
+
+          db.coll.remove({_id: ObjectId("52a3d4d243343277580dbe77")});
+
+          db.coll.update({nome: "Moot"}, {nome: "Moot", idade: 20}); // uncool
+          db.coll.update({nome: "Moot"}, {$set: {idade: 20}});
+          db.coll.update({cargo: "tester"}, {$inc: {salario: 200}}, {multi: true});
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Cursores
+
+          Comando `find()` retorna um cursor, que pode possui alguns métodos
+          interessantes. Ex.:
+
+          ```
+          db.coll.find().sort({nota: -1, idade: 1}).skip(2).limit(10);
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Schema design
+
+          Evite:
+          ```
+          {"groups": {
+              152: "hi",
+              111: "group2"
+          }}
+          ```
+
+          Prefira:
+          ```
+          {"groups": [
+              {"id": 152, "name": "hi"},
+              {"id": 111, "name": "group2"}
+          ]}
+          ```
+        </section>
+
+        <section data-markdown>
+          # Perguntas?
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+      // Parallax scrolling
+      // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+      // parallaxBackgroundSize: '2100px 900px',
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+      { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+      ]
+      });
+
+    </script>
+
+  </body>
+</html>
