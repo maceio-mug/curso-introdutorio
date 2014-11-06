@@ -223,6 +223,14 @@
           <script type="text/template">
             ## Schemaless
 
+            ![](img/shot0002.png)
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Schemaless
+
             Outras considerações:
 
             * Fator de padding
@@ -322,6 +330,87 @@
               {"id": 152, "name": "hi"},
               {"id": 111, "name": "group2"}
           ]}
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Schema design
+
+          ### Normalização (mundo relacional)
+
+          - Livrar o banco de dados de anomalias de modificações
+          - "Minimizar o redesign na hora de extender"
+          - Evitar um viés para qualquer padrão de acesso (consulta) particular
+        </section>
+
+        <section data-markdown>
+          ## Schema design
+
+          ### "Normalizado"
+
+          ```javascript
+          posts = [{
+            _id: ObjectID("..."),
+            title: "...",
+            body: "...",
+            author: "..."
+          }]
+
+          comments = [{
+            post_id: ObjectId("..."),
+            name: "...",
+            email: "...",
+            body: "..."
+          }]
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Schema design
+
+          ### Embutido
+
+          ```javascript
+          posts = [{
+            title: "...",
+            body: "...",
+            author: "...",
+            comments: [
+              {
+                name: "...",
+                email: "...",
+                body: "..."
+              },
+              {
+                name: "...",
+                email: "...",
+                body: "..."
+              } /*, ... */
+            ]
+          }]
+          ```
+        </section>
+
+        <section data-markdown>
+          # Schema design
+
+          ### Misto
+
+          ```javascript
+          posts = [{
+            _id: ObjectID("..."),
+            title: "...",
+            body: "...",
+            author: "...",
+            comments: [/* ... */]
+          }]
+
+          comments = [{
+            post_id: ObjectId("..."),
+            name: "...",
+            email: "...",
+            body: "..."
+          }]
           ```
         </section>
 
